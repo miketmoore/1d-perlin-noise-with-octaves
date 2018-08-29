@@ -9,12 +9,17 @@ import (
 // Converted from javascript example here:
 // https://codepen.io/Tobsta/post/procedural-generation-part-1-1d-perlin-noise
 
+var seed float64 = 100
+
 func main() {
 	x := prng()
-	fmt.Println(x)
+	fmt.Printf("Pseudo-random number generator example (seed:%f): %f\n", seed, x)
 
-	y := interpolate(100, 200, 0.25)
-	fmt.Println(y)
+	a := 100.0
+	b := 200.0
+	mu := 0.5
+	y := interpolate(a, b, mu)
+	fmt.Printf("Interpolate between %.2f and %.2f (mu:%.2f): %.2f\n", a, b, mu, y)
 }
 
 var M float64 = 4294967296
@@ -24,8 +29,6 @@ var A float64 = 1664525
 
 // c and m should be co-prime
 var C float64 = 1
-
-var seed float64 = 100
 
 var Z float64 = math.Floor(seed)
 
