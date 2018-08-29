@@ -5,10 +5,6 @@ import (
 	"math"
 )
 
-// 1D Perlin noise
-// Converted from javascript example here:
-// https://codepen.io/Tobsta/post/procedural-generation-part-1-1d-perlin-noise
-
 var seed float64 = 100
 
 type Perlin struct {
@@ -17,14 +13,10 @@ type Perlin struct {
 	Pos                                 []float64
 }
 
-/*
-The amplitude, in case you don't know, is the distance from the top (or highest possible value) to the bottom (or lowest possible value) of the wave.
-The wavelength is the distance from the peak of one wave to the peak of the next (that is, along the x axis, if the wave is oriented the same way as in the previous example.)
-The frequency, although we don't use it in the end, is the amount of waves in one second (or other unit of time).
-*/
-
 func main() {
-	// examples()
+	// demoPRNG()
+	// demoInterpolate()
+
 	noise := generateNoise(128, 128, 8, 2, 10)
 	for _, n := range noise {
 		fmt.Println(n.Pos)
@@ -32,9 +24,12 @@ func main() {
 
 }
 
-func examples() {
+func demoPRNG() {
 	x := prng()
 	fmt.Printf("Pseudo-random number generator example (seed:%f): %f\n", seed, x)
+}
+
+func demoInterpolate() {
 
 	a := 100.0
 	b := 200.0

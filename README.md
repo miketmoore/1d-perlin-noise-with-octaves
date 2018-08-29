@@ -2,6 +2,14 @@
 
 ## Description
 
-Converted from javascript example by [Tobsta](https://github.com/Tobsta): https://codepen.io/Tobsta/post/procedural-generation-part-1-1d-perlin-noise
+Converted from [javascript example](https://github.com/Tobsta) by [Tobsta](https://github.com/Tobsta).
+
+## Install and Run
+
+```
+go get github.com/miketmoore/1d-perlin-noise-with-octaves
+cd $GOPATH/src/github.com/miketmoore/1d-perlin-noise-with-octaves
+go run cmd/example/main.go
+```
 
 
