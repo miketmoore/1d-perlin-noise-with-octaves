@@ -11,7 +11,28 @@ import (
 
 var seed float64 = 100
 
+type Perlin struct {
+	X, Amp, Wavelength, Frequency, A, B float64
+	Prng                                PRNG
+	Pos                                 []float64
+}
+
+/*
+The amplitude, in case you don't know, is the distance from the top (or highest possible value) to the bottom (or lowest possible value) of the wave.
+The wavelength is the distance from the peak of one wave to the peak of the next (that is, along the x axis, if the wave is oriented the same way as in the previous example.)
+The frequency, although we don't use it in the end, is the amount of waves in one second (or other unit of time).
+*/
+
 func main() {
+	// examples()
+	noise := generateNoise(128, 128, 8, 2, 10)
+	for _, n := range noise {
+		fmt.Println(n.Pos)
+	}
+
+}
+
+func examples() {
 	x := prng()
 	fmt.Printf("Pseudo-random number generator example (seed:%f): %f\n", seed, x)
 
@@ -41,4 +62,55 @@ func interpolate(pa, pb, px float64) float64 {
 	ft := px * math.Pi
 	f := (1 - math.Cos(ft)) * 0.5
 	return pa*(1-f) + pb*f
+}
+
+func NewPerlin(amp, wl, width float64) Perlin {
+	p := Perlin{
+		X:          0,
+		Amp:        amp,
+		Wavelength: wl,
+		Frequency:  1 / wl,
+		Pos:        []float64{},
+	}
+
+	psng := PRNG{}
+	p.A = psng.Next()
+	p.B = psng.Next()
+
+	for p.X < width {
+		if math.Mod(p.X, p.Wavelength) == 0 {
+			p.A = p.B
+			p.B = psng.Next()
+			p.Pos = append(p.Pos, p.A*p.Amp)
+		} else {
+			mu := (math.Mod(p.X, p.Wavelength) / p.Wavelength) * p.Amp
+			interpolated := interpolate(p.A, p.B, mu)
+			p.Pos = append(p.Pos, interpolated)
+		}
+		p.X++
+	}
+	return p
+}
+
+// PRNG is a psuedo-random number generator (linear congruential)
+type PRNG struct {
+	Z float64
+}
+
+func (p *PRNG) Next() float64 {
+	p.Z = math.Mod(A*p.Z+C, M)
+	return p.Z/M - 0.5
+}
+
+func generateNoise(amp, wl, octaves, divisor, width float64) []Perlin {
+	result := []Perlin{}
+
+	for i := 0.0; i < octaves; i++ {
+		p := NewPerlin(amp, wl, width)
+		amp = amp / divisor
+		wl = wl / divisor
+		result = append(result, p)
+	}
+
+	return result
 }
