@@ -3,9 +3,16 @@ package main
 import (
 	"fmt"
 	"math"
+	"os"
+
+	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/pixelgl"
 )
 
-var seed float64 = 100
+var (
+	seed float64 = 100
+	win  *pixelgl.Window
+)
 
 type Perlin struct {
 	X, Amp, Wavelength, Frequency, A, B float64
@@ -13,15 +20,15 @@ type Perlin struct {
 	Pos                                 []float64
 }
 
-func main() {
+func foo() {
 	// demoPRNG()
 	// demoInterpolate()
 
-	amp := 128
-	wl := 128
-	octaves := 8
-	divisor := 2
-	w := 10
+	var amp float64 = 128
+	var wl float64 = 128
+	var octaves float64 = 8
+	var divisor float64 = 2
+	var w float64 = 10
 	noise := generateNoise(amp, wl, octaves, divisor, w)
 	// for _, n := range noise {
 	// 	fmt.Println(n.Pos)
@@ -30,6 +37,32 @@ func main() {
 	combined := combineNoise(noise)
 	fmt.Println(combined)
 
+}
+
+func run() {
+
+	// Setup GUI window
+	cfg := pixelgl.WindowConfig{
+		Title:  "1D Perlin Noise",
+		Bounds: pixel.R(0, 0, 400, 225),
+		VSync:  true,
+	}
+	win, err := pixelgl.NewWindow(cfg)
+	if err != nil {
+		panic(err)
+	}
+
+	for !win.Closed() {
+		if win.JustPressed(pixelgl.KeyQ) {
+			os.Exit(1)
+		}
+
+		win.Update()
+	}
+}
+
+func main() {
+	pixelgl.Run(run)
 }
 
 func demoPRNG() {
