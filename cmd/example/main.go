@@ -17,10 +17,18 @@ func main() {
 	// demoPRNG()
 	// demoInterpolate()
 
-	noise := generateNoise(128, 128, 8, 2, 10)
-	for _, n := range noise {
-		fmt.Println(n.Pos)
-	}
+	amp := 128
+	wl := 128
+	octaves := 8
+	divisor := 2
+	w := 10
+	noise := generateNoise(amp, wl, octaves, divisor, w)
+	// for _, n := range noise {
+	// 	fmt.Println(n.Pos)
+	// }
+
+	combined := combineNoise(noise)
+	fmt.Println(combined)
 
 }
 
@@ -109,3 +117,46 @@ func generateNoise(amp, wl, octaves, divisor, width float64) []Perlin {
 
 	return result
 }
+
+/*
+//combines octaves together
+function CombineNoise(pl){
+	var result = {pos: []};
+	for(var i = 0, total = 0, j = 0; i < pl[0].pos.length; i++){
+		total = 0;
+		for(j = 0; j < pl.length; j++){
+			total += pl[j].pos[i];
+		}
+		result.pos.push(total);
+	}
+	return result;
+}
+*/
+
+func combineNoise(pl []Perlin) []float64 {
+	combined := []float64{}
+
+	for i, total, j := 0, 0.0, 0; i < len(pl[0].Pos); i++ {
+		fmt.Println(i, total, j)
+		total = 0
+		for j = 0; j < len(pl); j++ {
+			fmt.Println("\t", i, total, j)
+			total += pl[j].Pos[i]
+		}
+		combined = append(combined, total)
+	}
+
+	return combined
+}
+
+/*
+
+//perlin line plotting
+function DrawLine(L){
+	ctx.moveTo(0, h / 2);
+	for(var i = 0; i < L.pos.length; i++){
+		ctx.lineTo(i, h / 2 + L.pos[i]);
+	}
+	ctx.stroke();
+}
+*/
