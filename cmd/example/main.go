@@ -6,7 +6,9 @@ import (
 	"os"
 
 	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
+	"golang.org/x/image/colornames"
 )
 
 var (
@@ -20,31 +22,27 @@ type Perlin struct {
 	Pos                                 []float64
 }
 
+var amp float64 = 128
+var wl float64 = 128
+var octaves float64 = 8
+var divisor float64 = 2
+var w float64 = 10
+
 func foo() {
-	// demoPRNG()
-	// demoInterpolate()
-
-	var amp float64 = 128
-	var wl float64 = 128
-	var octaves float64 = 8
-	var divisor float64 = 2
-	var w float64 = 10
 	noise := generateNoise(amp, wl, octaves, divisor, w)
-	// for _, n := range noise {
-	// 	fmt.Println(n.Pos)
-	// }
-
 	combined := combineNoise(noise)
 	fmt.Println(combined)
-
 }
+
+const height = 500
+const width = 500
 
 func run() {
 
 	// Setup GUI window
 	cfg := pixelgl.WindowConfig{
 		Title:  "1D Perlin Noise",
-		Bounds: pixel.R(0, 0, 400, 225),
+		Bounds: pixel.R(0, 0, width, height),
 		VSync:  true,
 	}
 	win, err := pixelgl.NewWindow(cfg)
@@ -52,9 +50,45 @@ func run() {
 		panic(err)
 	}
 
+	state := "draw"
+
+	noise := generateNoise(amp, wl, octaves, divisor, w)
+	combined := combineNoise(noise)
+
 	for !win.Closed() {
 		if win.JustPressed(pixelgl.KeyQ) {
 			os.Exit(1)
+		}
+
+		if win.JustPressed(pixelgl.KeySpace) {
+			state = "draw"
+		}
+
+		if state == "draw" {
+			win.Clear(colornames.White)
+
+			/*
+				function DrawLine(L){
+					ctx.moveTo(0, h / 2);
+					for(var i = 0; i < L.pos.length; i++){
+						ctx.lineTo(i, h / 2 + L.pos[i]);
+					}
+					ctx.stroke();
+				}
+			*/
+			imd := imdraw.New(nil)
+			imd.Push(pixel.V(0, height/2))
+			for i, c := range combined {
+				imd.Color = colornames.Black
+				imd.EndShape = imdraw.SharpEndShape
+				x := float64(i)
+				y := float64(height/2) + c
+				imd.Push(pixel.V(x, y))
+
+			}
+			imd.Line(1)
+			imd.Draw(win)
+			state = "nothing"
 		}
 
 		win.Update()
@@ -65,18 +99,13 @@ func main() {
 	pixelgl.Run(run)
 }
 
-func demoPRNG() {
-	x := prng()
-	fmt.Printf("Pseudo-random number generator example (seed:%f): %f\n", seed, x)
-}
-
-func demoInterpolate() {
-
-	a := 100.0
-	b := 200.0
-	mu := 0.5
-	y := interpolate(a, b, mu)
-	fmt.Printf("Interpolate between %.2f and %.2f (mu:%.2f): %.2f\n", a, b, mu, y)
+func drawRect(win *pixelgl.Window, x1, y1, w, h float64, color pixel.RGBA) {
+	rect := imdraw.New(nil)
+	rect.Color = color
+	rect.Push(pixel.V(x1, y1))
+	rect.Push(pixel.V(x1+w, y1+h))
+	rect.Rectangle(0)
+	rect.Draw(win)
 }
 
 var M float64 = 4294967296
@@ -151,21 +180,6 @@ func generateNoise(amp, wl, octaves, divisor, width float64) []Perlin {
 	return result
 }
 
-/*
-//combines octaves together
-function CombineNoise(pl){
-	var result = {pos: []};
-	for(var i = 0, total = 0, j = 0; i < pl[0].pos.length; i++){
-		total = 0;
-		for(j = 0; j < pl.length; j++){
-			total += pl[j].pos[i];
-		}
-		result.pos.push(total);
-	}
-	return result;
-}
-*/
-
 func combineNoise(pl []Perlin) []float64 {
 	combined := []float64{}
 
@@ -181,15 +195,3 @@ func combineNoise(pl []Perlin) []float64 {
 
 	return combined
 }
-
-/*
-
-//perlin line plotting
-function DrawLine(L){
-	ctx.moveTo(0, h / 2);
-	for(var i = 0; i < L.pos.length; i++){
-		ctx.lineTo(i, h / 2 + L.pos[i]);
-	}
-	ctx.stroke();
-}
-*/
