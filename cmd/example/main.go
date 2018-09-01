@@ -85,12 +85,13 @@ func generateData() []float64 {
 func drawLine(win *pixelgl.Window, combined []float64) {
 	imd := imdraw.New(nil)
 	imd.Color = colornames.Black
-	imd.Push(pixel.V(0, height/2))
+	y := float64(height / 2)
+	imd.Push(pixel.V(0, y))
 	for i, c := range combined {
 		x := float64(i)
-		y := float64(height/2) + (c * 10)
+		y = y + c
+		fmt.Println(i)
 		imd.Push(pixel.V(x, y))
-
 	}
 	imd.Line(1)
 	imd.Draw(win)
