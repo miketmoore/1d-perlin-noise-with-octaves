@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"math/rand"
 	"os"
 
 	"github.com/faiface/pixel"
@@ -77,13 +78,14 @@ func run() {
 				}
 			*/
 			imd := imdraw.New(nil)
+			imd.Color = colornames.Black
 			imd.Push(pixel.V(0, height/2))
 			for i, c := range combined {
-				imd.Color = colornames.Black
+				fmt.Println(i)
 				imd.EndShape = imdraw.SharpEndShape
 				x := float64(i)
-				y := float64(height/2) + c
-				imd.Push(pixel.V(x, y))
+				y := float64(height/2) + (c * 10)
+				imd.Push(pixel.V(x+50, y))
 
 			}
 			imd.Line(1)
@@ -106,21 +108,6 @@ func drawRect(win *pixelgl.Window, x1, y1, w, h float64, color pixel.RGBA) {
 	rect.Push(pixel.V(x1+w, y1+h))
 	rect.Rectangle(0)
 	rect.Draw(win)
-}
-
-var M float64 = 4294967296
-
-// a - 1 should be divisible by m's prime factors
-var A float64 = 1664525
-
-// c and m should be co-prime
-var C float64 = 1
-
-var Z float64 = math.Floor(seed)
-
-func prng() float64 {
-	Z = math.Mod(A*Z+C, M)
-	return Z / M
 }
 
 func interpolate(pa, pb, px float64) float64 {
@@ -153,18 +140,21 @@ function Perlin(amp, wl, width){
 }
 */
 func NewPerlin(amp, wl, width float64) Perlin {
-	prng := PRNG{}
+	r := PRNG{
+		Z: math.Floor(rand.Float64() * M),
+	}
 	p := Perlin{
 		X:          0,
 		Amp:        amp,
 		Wavelength: wl,
 		Frequency:  1 / wl,
-		Prng:       prng,
-		A:          prng.Next(),
-		B:          prng.Next(),
+		Prng:       r,
+		A:          r.Next(),
+		B:          r.Next(),
 		Pos:        []float64{},
 	}
 	for p.X < width {
+		fmt.Println(">>", p.X)
 		if math.Mod(p.X, p.Wavelength) == 0 {
 			p.A = p.B
 			p.B = p.Prng.Next()
@@ -177,10 +167,30 @@ func NewPerlin(amp, wl, width float64) Perlin {
 	return p
 }
 
+var M float64 = 4294967296
+
+// a - 1 should be divisible by m's prime factors
+var A float64 = 1664525
+
+// c and m should be co-prime
+var C float64 = 1
+
+var Z float64 = math.Floor(seed)
+
 // PRNG is a psuedo-random number generator (linear congruential)
 type PRNG struct {
 	Z float64
 }
+
+/*
+function PSNG(){
+	this.Z = Math.floor(Math.random() * M);
+	this.next = function(){
+		this.Z = (A * this.Z + C) % M;
+		return this.Z / M - 0.5;
+	}
+}
+*/
 
 func (p *PRNG) Next() float64 {
 	p.Z = math.Mod(A*p.Z+C, M)
