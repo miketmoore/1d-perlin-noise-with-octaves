@@ -14,16 +14,17 @@ import (
 )
 
 var (
-	win *pixelgl.Window
+	win     *pixelgl.Window
+	amp     float64 = 128
+	wl      float64 = 128
+	octaves float64 = 8
+	divisor float64 = 2
 )
 
-var amp float64 = 128
-var wl float64 = 128
-var octaves float64 = 8
-var divisor float64 = 2
-
-const height = 500
-const width = 500
+const (
+	height = 500
+	width  = 500
+)
 
 func run() {
 
