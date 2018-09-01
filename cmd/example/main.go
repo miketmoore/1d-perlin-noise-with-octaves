@@ -82,15 +82,6 @@ func generateData() []float64 {
 	return noise.CombineNoise(generatedNoise)
 }
 
-func drawRect(win *pixelgl.Window, x1, y1, w, h float64, color pixel.RGBA) {
-	rect := imdraw.New(nil)
-	rect.Color = color
-	rect.Push(pixel.V(x1, y1))
-	rect.Push(pixel.V(x1+w, y1+h))
-	rect.Rectangle(0)
-	rect.Draw(win)
-}
-
 func drawLine(win *pixelgl.Window, combined []float64) {
 	imd := imdraw.New(nil)
 	imd.Color = colornames.Black
