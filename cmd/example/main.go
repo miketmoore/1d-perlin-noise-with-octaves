@@ -167,27 +167,51 @@ func (p *PRNG) Next() float64 {
 	return p.Z/M - 0.5
 }
 
+/*
+//octave generator
+function GenerateNoise(amp, wl, octaves, divisor, width){
+	var result = [];
+	for(var i = 0; i < octaves; i++){
+		result.push(new Perlin(amp, wl, width));
+		amp /= divisor;
+		wl /= divisor;
+	}
+	return result;
+}
+*/
 func generateNoise(amp, wl, octaves, divisor, width float64) []Perlin {
 	result := []Perlin{}
 
-	for i := 0.0; i < octaves; i++ {
+	for i := 0; i < int(octaves); i++ {
 		p := NewPerlin(amp, wl, width)
+		result = append(result, p)
 		amp = amp / divisor
 		wl = wl / divisor
-		result = append(result, p)
 	}
 
 	return result
 }
 
+/*
+//combines octaves together
+function CombineNoise(pl){
+	var result = {pos: []};
+	for(var i = 0, total = 0, j = 0; i < pl[0].pos.length; i++){
+		total = 0;
+		for(j = 0; j < pl.length; j++){
+			total += pl[j].pos[i];
+		}
+		result.pos.push(total);
+	}
+	return result;
+}
+*/
 func combineNoise(pl []Perlin) []float64 {
 	combined := []float64{}
 
 	for i, total, j := 0, 0.0, 0; i < len(pl[0].Pos); i++ {
-		fmt.Println(i, total, j)
 		total = 0
 		for j = 0; j < len(pl); j++ {
-			fmt.Println("\t", i, total, j)
 			total += pl[j].Pos[i]
 		}
 		combined = append(combined, total)
