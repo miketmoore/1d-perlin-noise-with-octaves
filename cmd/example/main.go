@@ -27,13 +27,6 @@ var amp float64 = 128
 var wl float64 = 128
 var octaves float64 = 8
 var divisor float64 = 2
-var w float64 = 10
-
-func foo() {
-	noise := generateNoise(amp, wl, octaves, divisor, w)
-	combined := combineNoise(noise)
-	fmt.Println(combined)
-}
 
 const height = 500
 const width = 500
@@ -53,7 +46,7 @@ func run() {
 
 	state := "draw"
 
-	noise := generateNoise(amp, wl, octaves, divisor, w)
+	noise := generateNoise(amp, wl, octaves, divisor, width)
 	fmt.Println("total noise: ", len(noise))
 	// should be 1,168 values in n.Pos slice
 	for i, n := range noise {
@@ -86,7 +79,6 @@ func run() {
 			imd.Color = colornames.Black
 			imd.Push(pixel.V(0, height/2))
 			for i, c := range combined {
-				fmt.Println(i)
 				imd.EndShape = imdraw.SharpEndShape
 				x := float64(i)
 				y := float64(height/2) + (c * 10)
