@@ -38,7 +38,9 @@ func run() {
 		panic(err)
 	}
 
-	state := "draw"
+	state := "generate"
+
+	var data []float64
 
 	for !win.Closed() {
 		if win.JustPressed(pixelgl.KeyQ) {
@@ -46,12 +48,17 @@ func run() {
 		}
 
 		if win.JustPressed(pixelgl.KeySpace) {
+			state = "generate"
+		}
+
+		if state == "generate" {
+			rand.Seed(time.Now().UTC().UnixNano())
+			data = generateData()
 			state = "draw"
 		}
 
 		if state == "draw" {
-			rand.Seed(time.Now().UTC().UnixNano())
-			data := generateData()
+
 			win.Clear(colornames.White)
 			drawLine(win, data)
 			state = "nothing"
