@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
+	"time"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
@@ -36,8 +38,6 @@ func run() {
 		panic(err)
 	}
 
-	data := generateData()
-
 	state := "draw"
 
 	for !win.Closed() {
@@ -50,6 +50,8 @@ func run() {
 		}
 
 		if state == "draw" {
+			rand.Seed(time.Now().UTC().UnixNano())
+			data := generateData()
 			win.Clear(colornames.White)
 			drawLine(win, data)
 			state = "nothing"

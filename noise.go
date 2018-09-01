@@ -48,9 +48,7 @@ function Perlin(amp, wl, width){
 }
 */
 func NewPerlin(amp, wl, width float64) Perlin {
-	r := PRNG{
-		Z: math.Floor(rand.Float64() * M),
-	}
+	r := NewPRNG()
 	p := Perlin{
 		X:          0,
 		Amp:        amp,
@@ -83,26 +81,22 @@ var A float64 = 1664525
 // c and m should be co-prime
 var C float64 = 1
 
-var Z float64 = math.Floor(seed)
+// var Z float64 = math.Floor(seed)
 
 // PRNG is a psuedo-random number generator (linear congruential)
 type PRNG struct {
 	Z float64
 }
 
-/*
-function PSNG(){
-	this.Z = Math.floor(Math.random() * M);
-	this.next = function(){
-		this.Z = (A * this.Z + C) % M;
-		return this.Z / M - 0.5;
-	}
-}
-*/
-
 func (p *PRNG) Next() float64 {
 	p.Z = math.Mod(A*p.Z+C, M)
 	return p.Z/M - 0.5
+}
+
+func NewPRNG() PRNG {
+	return PRNG{
+		Z: math.Floor(rand.Float64() * M),
+	}
 }
 
 /*
