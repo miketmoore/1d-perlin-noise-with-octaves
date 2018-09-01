@@ -54,6 +54,11 @@ func run() {
 	state := "draw"
 
 	noise := generateNoise(amp, wl, octaves, divisor, w)
+	fmt.Println("total noise: ", len(noise))
+	// should be 1,168 values in n.Pos slice
+	for i, n := range noise {
+		fmt.Println(i, len(n.Pos))
+	}
 	combined := combineNoise(noise)
 
 	for !win.Closed() {
@@ -110,6 +115,13 @@ func drawRect(win *pixelgl.Window, x1, y1, w, h float64, color pixel.RGBA) {
 	rect.Draw(win)
 }
 
+/*
+function Interpolate(pa, pb, px){
+	var ft = px * Math.PI,
+		f = (1 - Math.cos(ft)) * 0.5;
+	return pa * (1 - f) + pb * f;
+}
+*/
 func interpolate(pa, pb, px float64) float64 {
 	ft := px * math.Pi
 	f := (1 - math.Cos(ft)) * 0.5
@@ -154,7 +166,6 @@ func NewPerlin(amp, wl, width float64) Perlin {
 		Pos:        []float64{},
 	}
 	for p.X < width {
-		fmt.Println(">>", p.X)
 		if math.Mod(p.X, p.Wavelength) == 0 {
 			p.A = p.B
 			p.B = p.Prng.Next()
