@@ -36,14 +36,9 @@ func run() {
 		panic(err)
 	}
 
-	state := "draw"
+	data := generateData()
 
-	generatedNoise := noise.GenerateNoise(amp, wl, octaves, divisor, width)
-	fmt.Println("total noise: ", len(generatedNoise))
-	for i, n := range generatedNoise {
-		fmt.Println(i, len(n.Pos))
-	}
-	combined := noise.CombineNoise(generatedNoise)
+	state := "draw"
 
 	for !win.Closed() {
 		if win.JustPressed(pixelgl.KeyQ) {
@@ -56,27 +51,7 @@ func run() {
 
 		if state == "draw" {
 			win.Clear(colornames.White)
-
-			/*
-				function DrawLine(L){
-					ctx.moveTo(0, h / 2);
-					for(var i = 0; i < L.pos.length; i++){
-						ctx.lineTo(i, h / 2 + L.pos[i]);
-					}
-					ctx.stroke();
-				}
-			*/
-			imd := imdraw.New(nil)
-			imd.Color = colornames.Black
-			imd.Push(pixel.V(0, height/2))
-			for i, c := range combined {
-				x := float64(i)
-				y := float64(height/2) + (c * 10)
-				imd.Push(pixel.V(x, y))
-
-			}
-			imd.Line(1)
-			imd.Draw(win)
+			drawLine(win, data)
 			state = "nothing"
 		}
 
@@ -88,6 +63,15 @@ func main() {
 	pixelgl.Run(run)
 }
 
+func generateData() []float64 {
+	generatedNoise := noise.GenerateNoise(amp, wl, octaves, divisor, width)
+	fmt.Println("total noise: ", len(generatedNoise))
+	for i, n := range generatedNoise {
+		fmt.Println(i, len(n.Pos))
+	}
+	return noise.CombineNoise(generatedNoise)
+}
+
 func drawRect(win *pixelgl.Window, x1, y1, w, h float64, color pixel.RGBA) {
 	rect := imdraw.New(nil)
 	rect.Color = color
@@ -95,4 +79,18 @@ func drawRect(win *pixelgl.Window, x1, y1, w, h float64, color pixel.RGBA) {
 	rect.Push(pixel.V(x1+w, y1+h))
 	rect.Rectangle(0)
 	rect.Draw(win)
+}
+
+func drawLine(win *pixelgl.Window, combined []float64) {
+	imd := imdraw.New(nil)
+	imd.Color = colornames.Black
+	imd.Push(pixel.V(0, height/2))
+	for i, c := range combined {
+		x := float64(i)
+		y := float64(height/2) + (c * 10)
+		imd.Push(pixel.V(x, y))
+
+	}
+	imd.Line(1)
+	imd.Draw(win)
 }
