@@ -129,28 +129,48 @@ func interpolate(pa, pb, px float64) float64 {
 	return pa*(1-f) + pb*f
 }
 
+/*
+//1D perlin line generator
+function Perlin(amp, wl, width){
+	this.x = 0;
+	this.amp = amp;
+	this.wl = wl;
+	this.fq = 1 / wl;
+	this.psng = new PSNG();
+	this.a = this.psng.next();
+	this.b = this.psng.next();
+	this.pos = [];
+	while(this.x < width){
+		if(this.x % this.wl === 0){
+			this.a = this.b;
+			this.b = this.psng.next();
+			this.pos.push(this.a * this.amp);
+		}else{
+			this.pos.push(Interpolate(this.a, this.b, (this.x % this.wl) / this.wl) * this.amp);
+		}
+		this.x++;
+	}
+}
+*/
 func NewPerlin(amp, wl, width float64) Perlin {
+	prng := PRNG{}
 	p := Perlin{
 		X:          0,
 		Amp:        amp,
 		Wavelength: wl,
 		Frequency:  1 / wl,
+		Prng:       prng,
+		A:          prng.Next(),
+		B:          prng.Next(),
 		Pos:        []float64{},
 	}
-
-	psng := PRNG{}
-	p.A = psng.Next()
-	p.B = psng.Next()
-
 	for p.X < width {
 		if math.Mod(p.X, p.Wavelength) == 0 {
 			p.A = p.B
-			p.B = psng.Next()
+			p.B = p.Prng.Next()
 			p.Pos = append(p.Pos, p.A*p.Amp)
 		} else {
-			mu := (math.Mod(p.X, p.Wavelength) / p.Wavelength) * p.Amp
-			interpolated := interpolate(p.A, p.B, mu)
-			p.Pos = append(p.Pos, interpolated)
+			p.Pos = append(p.Pos, interpolate(p.A, p.B, (math.Mod(p.X, p.Wavelength)/p.Wavelength)*p.Amp))
 		}
 		p.X++
 	}
