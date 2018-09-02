@@ -76,7 +76,7 @@ func drawLine(win *pixelgl.Window, combined []float64) {
 		y2 := y + combined[i]
 		imd.Push(pixel.V(x, y2))
 	}
-	imd.Line(1)
+	imd.Line(2)
 	imd.Draw(win)
 }
 
