@@ -13,11 +13,11 @@ import (
 )
 
 const (
-	w = 1000
-	h = 500
-	M = 4294967296
-	A = 1664525
-	C = 1
+	w float64 = 800
+	h float64 = 500
+	M         = 4294967296
+	A         = 1664525
+	C         = 1
 )
 
 func run() {
@@ -69,12 +69,12 @@ func main() {
 func drawLine(win *pixelgl.Window, combined []float64) {
 	imd := imdraw.New(nil)
 	imd.Color = colornames.Black
-	y := float64(h / 2)
+	y := h / 2.0
 	imd.Push(pixel.V(0, y))
-	for i, c := range combined {
+	for i := 0; i < len(combined); i++ {
 		x := float64(i)
-		y = y + c
-		imd.Push(pixel.V(x, y))
+		y2 := y + combined[i]
+		imd.Push(pixel.V(x, y2))
 	}
 	imd.Line(1)
 	imd.Draw(win)
