@@ -1,4 +1,4 @@
-# 1D Perlin noise
+# 1D Perlin Noise
 
 ## Description
 
