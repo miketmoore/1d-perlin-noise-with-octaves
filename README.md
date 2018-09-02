@@ -2,7 +2,7 @@
 
 ## Description
 
-Ported from [javascript example](https://github.com/Tobsta) by [Tobsta](https://github.com/Tobsta).
+Ported from [javascript example](https://codepen.io/Tobsta/post/procedural-generation-part-1-1d-perlin-noise) by [Tobsta](https://github.com/Tobsta).
 
 ## Install and Run
 
