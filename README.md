@@ -2,7 +2,7 @@
 
 ## Description
 
-Converted from [javascript example](https://github.com/Tobsta) by [Tobsta](https://github.com/Tobsta).
+Ported from [javascript example](https://github.com/Tobsta) by [Tobsta](https://github.com/Tobsta).
 
 ## Install and Run
 
