@@ -12,4 +12,4 @@ cd $GOPATH/src/github.com/miketmoore/1d-perlin-noise-with-octaves
 go run cmd/example/main.go
 ```
 
-
+![1D Perlin Noise Example](/images/1d-perlin-noise.png)
