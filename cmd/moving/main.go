@@ -28,32 +28,21 @@ func run() {
 		panic(err)
 	}
 
-	state := "generate"
-
 	dataA := generate()
-	dataB := generate()
+
+	x := 0.0
 
 	for !win.Closed() {
 		if win.JustPressed(pixelgl.KeyQ) {
 			os.Exit(1)
 		}
 
-		if win.JustPressed(pixelgl.KeySpace) {
-			state = "generate"
-		}
-
-		if state == "generate" {
-			state = "draw"
-		}
-
-		if state == "draw" {
-			win.Clear(colornames.White)
-			drawLine(win, dataA)
-			drawLine(win, dataB)
-			state = "nothing"
-		}
+		win.Clear(colornames.White)
+		drawLine(win, dataA, x)
 
 		win.Update()
+
+		x--
 	}
 }
 
@@ -67,13 +56,13 @@ func main() {
 	pixelgl.Run(run)
 }
 
-func drawLine(win *pixelgl.Window, combined []float64) {
+func drawLine(win *pixelgl.Window, combined []float64, xBase float64) {
 	imd := imdraw.New(nil)
 	imd.Color = colornames.Black
 	y := h / 2.0
-	imd.Push(pixel.V(0, y))
+	imd.Push(pixel.V(xBase, y))
 	for i := 0; i < len(combined); i++ {
-		x := float64(i)
+		x := float64(i) + xBase
 		y2 := y + combined[i]
 		imd.Push(pixel.V(x, y2))
 	}
