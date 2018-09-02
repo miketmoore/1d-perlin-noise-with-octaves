@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"os"
 	"time"
@@ -54,7 +53,7 @@ func run() {
 
 		if state == "generate" {
 			rand.Seed(time.Now().UTC().UnixNano())
-			data = generateData()
+			data = generateData(amp, wl, octaves, divisor, width)
 			state = "draw"
 		}
 
@@ -73,12 +72,8 @@ func main() {
 	pixelgl.Run(run)
 }
 
-func generateData() []float64 {
+func generateData(amp, wl, octaves, divisor, width float64) []float64 {
 	generatedNoise := noise.GenerateNoise(amp, wl, octaves, divisor, width)
-	fmt.Println("total noise: ", len(generatedNoise))
-	for i, n := range generatedNoise {
-		fmt.Println(i, len(n.Pos))
-	}
 	return noise.CombineNoise(generatedNoise)
 }
 
@@ -90,7 +85,6 @@ func drawLine(win *pixelgl.Window, combined []float64) {
 	for i, c := range combined {
 		x := float64(i)
 		y = y + c
-		fmt.Println(i)
 		imd.Push(pixel.V(x, y))
 	}
 	imd.Line(1)
