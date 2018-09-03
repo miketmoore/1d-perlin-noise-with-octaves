@@ -1,5 +1,6 @@
 package noise
 
+// GenerateNoise returns a slice of Perlin instances
 func GenerateNoise(amp, wl, octaves, divisor, width float64) []Perlin {
 	result := []Perlin{}
 	for i := 0.0; i < octaves; i++ {
@@ -10,6 +11,8 @@ func GenerateNoise(amp, wl, octaves, divisor, width float64) []Perlin {
 	return result
 }
 
+// CombineNoise returns a slice of float64 values, where each value is the
+// sum of each Perlin Pos slice values
 func CombineNoise(pl []Perlin) []float64 {
 	result := []float64{}
 	for i, total, j := 0, 0.0, 0; i < len(pl[0].Pos); i++ {
